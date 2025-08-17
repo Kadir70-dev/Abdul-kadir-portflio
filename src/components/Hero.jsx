@@ -8,7 +8,7 @@ const Hero = () => {
   return (
     <section className="relative w-full h-screen mx-auto">
       <div
-        className={`${styles.paddingX} absolute top-[120px] max-w-7xl mx-auto flex flex-row items-start gap-5 inset-0`}
+        className={`${styles.paddingX} absolute sm:top-[120px] top-[80px] max-w-7xl mx-auto flex flex-row items-start gap-5 inset-0`}
       >
         <div className="flex flex-col justify-center items-center mt-5">
           <div className="w-5 h-5 rounded-full bg-electric-purple" />
@@ -27,6 +27,7 @@ const Hero = () => {
         </div>
       </div>
 
+      {/* 3D Canvas or fallback image */}
       <ComputersCanvas />
 
       <div className="absolute xs:bottom-2 bottom-12 w-full flex justify-center items-center">
