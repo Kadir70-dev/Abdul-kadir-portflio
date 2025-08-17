@@ -4,26 +4,25 @@ import { OrbitControls, Preload, useGLTF } from "@react-three/drei";
 import CanvasLoader from "../Loader";
 
 const Computers = ({ isMobile }) => {
-  const computer = useGLTF("/desktop_pc/scene.gltf"); // use public folder path
+  const computer = useGLTF("./desktop_pc/scene.gltf");
 
   return (
     <mesh>
       <hemisphereLight intensity={0.15} groundColor="black" />
       <pointLight intensity={1} />
-      {!isMobile && (
-        <spotLight
-          position={[-20, 50, 10]}
-          angle={0.12}
-          intensity={1}
-          penumbra={1}
-          castShadow
-          shadow-mapSize={1024}
-        />
-      )}
+      <spotLight
+        visible
+        position={[-20, 50, 10]}
+        angle={0.12}
+        intensity={1}
+        penumbra={1}
+        castShadow
+        shadow-mapSize={1024}
+      />
       <primitive
         object={computer.scene}
-        scale={isMobile ? 0.5 : 0.75} // smaller on mobile
-        position={isMobile ? [0, -2, -2] : [0, -3.25, -1.5]}
+        scale={isMobile ? 0.65 : 0.75}
+        position={isMobile ? [0, -3, -2.2] : [0, -3.25, -1.5]}
         rotation={[-0.01, -0.2, -0.1]}
       />
     </mesh>
@@ -37,26 +36,39 @@ const ComputersCanvas = () => {
     const mediaQuery = window.matchMedia("(max-width: 500px)");
     setIsMobile(mediaQuery.matches);
 
-    const handleChange = (event) => setIsMobile(event.matches);
-    mediaQuery.addEventListener("change", handleChange);
-    return () => mediaQuery.removeEventListener("change", handleChange);
+    const handleMediaQueryChange = (event) => setIsMobile(event.matches);
+
+    mediaQuery.addEventListener("change", handleMediaQueryChange);
+
+    return () => mediaQuery.removeEventListener("change", handleMediaQueryChange);
   }, []);
+
+  // For mobile, return a static fallback image
+  if (isMobile) {
+    return (
+      <div className="w-full h-full flex justify-center items-center">
+        <img
+          src="/desktop_pc/fallback.png"
+          alt="Computer"
+          className="w-3/4 h-auto object-contain"
+        />
+      </div>
+    );
+  }
 
   return (
     <Canvas
-      frameloop={isMobile ? "demand" : "always"}
+      frameloop="demand"
       shadows
-      camera={{ position: isMobile ? [10, 2, 5] : [20, 3, 5], fov: 25 }}
-      gl={{ preserveDrawingBuffer: true }}
+      camera={{ position: [20, 3, 5], fov: 25 }}
+      gl={{ preserveDrawingBuffer: false }}
     >
       <Suspense fallback={<CanvasLoader />}>
-        {!isMobile && (
-          <OrbitControls
-            enableZoom={false}
-            maxPolarAngle={Math.PI / 2}
-            minPolarAngle={Math.PI / 2}
-          />
-        )}
+        <OrbitControls
+          enableZoom={false}
+          maxPolarAngle={Math.PI / 2}
+          minPolarAngle={Math.PI / 2}
+        />
         <Computers isMobile={isMobile} />
       </Suspense>
       <Preload all />
