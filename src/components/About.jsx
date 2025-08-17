@@ -5,13 +5,24 @@ import { fadeIn, textVariant } from "../utils/motion";
 import { personalInfo, navigationPaths, services } from "../constants";
 import { Tilt } from "react-tilt";
 import { SectionWrapper } from "../hoc";
+import { isMobile } from "react-device-detect";
 
 const ServiceCard = ({ index, title, icon }) => {
+  // Wrapper that disables Tilt on mobile
+  const CardWrapper = ({ children }) =>
+    isMobile ? (
+      <div className="xs:w-[250px] w-full">{children}</div>
+    ) : (
+      <Tilt
+        className="xs:w-[250px] w-full"
+        options={{ max: 45, scale: 1, speed: 450 }}
+      >
+        {children}
+      </Tilt>
+    );
+
   return (
-    <Tilt
-      className="xs:w-[250px] w-full"
-      options={{ max: 45, scale: 1, speed: 450 }}
-    >
+    <CardWrapper>
       <motion.div
         variants={fadeIn("right", "spring", index * 0.5, 0.75)}
         className="w-full green-pink-gradient p-[1px] rounded-[20px] shadow-card"
@@ -19,7 +30,7 @@ const ServiceCard = ({ index, title, icon }) => {
         <div className="bg-tertiary rounded-[20px] min-h-[280px] py-5 px-12 flex flex-col justify-evenly items-center">
           <img
             src={icon}
-            alt="web-developemnt"
+            alt="service-icon"
             className="w-16 h-16 object-contain"
           />
           <h3 className="text-white text-[20px] font-bold text-center">
@@ -27,7 +38,7 @@ const ServiceCard = ({ index, title, icon }) => {
           </h3>
         </div>
       </motion.div>
-    </Tilt>
+    </CardWrapper>
   );
 };
 
